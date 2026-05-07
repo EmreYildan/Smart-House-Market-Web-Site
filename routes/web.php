@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 
 Route::get('/', function () {
     $products = Product::where('is_active', true)->latest()->get();
@@ -13,9 +14,9 @@ Route::get('/', function () {
     return view('welcome', compact('products'));
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/user/dashboard', function () {
+    return view('user.dashboard');
+})->middleware('auth')->name('user.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,6 +36,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
     Route::post('/orders/{order}/approve', [AdminOrderController::class, 'approve'])->name('admin.orders.approve');
     Route::post('/orders/{order}/next-status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.nextStatus');
+
+    Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -47,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/checkout', [OrderController::class, 'checkout'])->name('orders.checkout');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 });
+
+
 
 require __DIR__.'/auth.php';

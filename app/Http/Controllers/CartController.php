@@ -20,8 +20,18 @@ class CartController extends Controller
         return view('cart.index', compact('cart', 'items'));
     }
 
-    public function add(Product $product)
+    public function add(Request $request, Product $product)
     {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $quantity = (int) $request->quantity;
+
+        if ($product->stock < $quantity) {
+            return back()->with('success', 'Yeterli stok yok. Mevcut stok: ' . $product->stock);
+        }
+
         $cart = Cart::firstOrCreate([
             'user_id' => auth()->id(),
         ]);
@@ -31,18 +41,21 @@ class CartController extends Controller
             ->first();
 
         if ($item) {
-            $item->increment('quantity');
+            if ($product->stock < ($item->quantity + $quantity)) {
+                return back()->with('success', 'Sepetteki adetle birlikte stok yetersiz. Mevcut stok: ' . $product->stock);
+            }
+
+            $item->increment('quantity', $quantity);
         } else {
             CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $product->id,
-                'quantity' => 1,
+                'quantity' => $quantity,
             ]);
         }
 
         return to_route('cart.index')->with('success', 'Ürün sepete eklendi.');
     }
-
     public function remove(CartItem $item)
     {
         $item->delete();

@@ -1,82 +1,103 @@
-<h1>Admin Sipariş Yönetimi</h1>
+@extends('layouts.app')
 
-<a href="{{ route('admin.dashboard') }}">Admin Panele Dön</a>
+@section('content')
+
+<div class="flex justify-between items-center mb-8">
+    <h1 class="text-3xl font-bold">Sipariş Yönetimi</h1>
+
+    <a href="{{ route('admin.dashboard') }}"
+       class="text-blue-600 hover:underline">
+        ← Admin Panele Dön
+    </a>
+</div>
 
 @if(session('success'))
-    <p style="color: green;">{{ session('success') }}</p>
+    <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
+        {{ session('success') }}
+    </div>
 @endif
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Kullanıcı</th>
-        <th>Toplam</th>
-        <th>Durum</th>
-        <th>Adres</th>
-        <th>Ürünler</th>
-        <th>İşlem</th>
-    </tr>
+<div class="bg-white rounded-xl shadow overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="text-left p-4">Sipariş No</th>
+                <th class="text-left p-4">Kullanıcı</th>
+                <th class="text-left p-4">Toplam</th>
+                <th class="text-left p-4">Durum</th>
+                <th class="text-left p-4">Adres</th>
+                <th class="text-left p-4">Ürünler</th>
+                <th class="text-left p-4">İşlem</th>
+            </tr>
+        </thead>
 
-    @foreach($orders as $order)
-        <tr>
-            <td>{{ $order->id }}</td>
-            <td>{{ $order->user_id }}</td>
-            <td>{{ $order->total_price }} TL</td>
-            <td>
-                @switch($order->status)
-                    @case('pending')
-                        Bekliyor
-                        @break
+        <tbody>
+            @foreach($orders as $order)
+                <tr class="border-t align-top">
+                    <td class="p-4 font-semibold">#{{ $order->id }}</td>
 
-                    @case('approved')
-                        Onaylandı
-                        @break
+                    <td class="p-4">
+                        Kullanıcı #{{ $order->user_id }}
+                    </td>
 
-                    @case('preparing')
-                        Hazırlanıyor
-                        @break
+                    <td class="p-4 font-semibold">
+                        {{ $order->total_price }} TL
+                    </td>
 
-                    @case('packed')
-                        Paketlendi
-                        @break
+                    <td class="p-4">
+                        <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
+                            @switch($order->status)
+                                @case('pending') Bekliyor @break
+                                @case('approved') Onaylandı @break
+                                @case('preparing') Hazırlanıyor @break
+                                @case('packed') Paketlendi @break
+                                @case('shipped') Kargoya Verildi @break
+                                @case('on_the_way') Yolda @break
+                                @case('delivered') Teslim Edildi @break
+                                @default {{ $order->status }}
+                            @endswitch
+                        </span>
+                    </td>
 
-                    @case('shipped')
-                        Kargoya Verildi
-                        @break
+                    <td class="p-4 text-gray-600 max-w-xs">
+                        {{ $order->shipping_address }}
+                    </td>
 
-                    @case('on_the_way')
-                        Yolda
-                        @break
+                    <td class="p-4 text-gray-700">
+                        @foreach($order->items as $item)
+                            <div class="mb-1">
+                                {{ $item->product->name }} x {{ $item->quantity }}
+                            </div>
+                        @endforeach
+                    </td>
 
-                    @case('delivered')
-                        Teslim Edildi
-                        @break
+                    <td class="p-4">
+                        @if($order->status === 'pending')
+                            <form method="POST" action="{{ route('admin.orders.approve', $order) }}">
+                                @csrf
+                                <button type="submit"
+                                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                    Onayla
+                                </button>
+                            </form>
+                        @elseif($order->status !== 'delivered')
+                            <form method="POST" action="{{ route('admin.orders.nextStatus', $order) }}">
+                                @csrf
+                                <button type="submit"
+                                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                    Durumu İlerlet
+                                </button>
+                            </form>
+                        @else
+                            <span class="text-green-700 font-semibold">
+                                Teslim edildi
+                            </span>
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
 
-                    @default
-                        {{ $order->status }}
-                @endswitch
-            </td>
-            <td>{{ $order->shipping_address }}</td>
-            <td>
-                @foreach($order->items as $item)
-                    {{ $item->product->name }} x {{ $item->quantity }} <br>
-                @endforeach
-            </td>
-            <td>
-                @if($order->status === 'pending')
-                    <form method="POST" action="{{ route('admin.orders.approve', $order) }}">
-                        @csrf
-                        <button type="submit">Onayla</button>
-                    </form>
-                @elseif($order->status !== 'delivered')
-                    <form method="POST" action="{{ route('admin.orders.nextStatus', $order) }}">
-                        @csrf
-                        <button type="submit">Durumu İlerlet</button>
-                    </form>
-                @else
-                    Teslim edildi
-                @endif
-            </td>
-        </tr>
-    @endforeach
-</table>
+@endsection

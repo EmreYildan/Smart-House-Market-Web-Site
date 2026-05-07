@@ -39,6 +39,10 @@ class OrderController extends Controller
         $total = 0;
 
         foreach ($items as $item) {
+            if ($item->product->stock < $item->quantity) {
+                return to_route('cart.index')->with('success', $item->product->name . ' için yeterli stok yok.');
+            }
+
             $total += $item->quantity * $item->product->price;
         }
 
@@ -56,6 +60,8 @@ class OrderController extends Controller
                 'quantity' => $item->quantity,
                 'price' => $item->product->price,
             ]);
+
+            $item->product->decrement('stock', $item->quantity);
         }
 
         $cart->items()->delete();
@@ -68,5 +74,29 @@ class OrderController extends Controller
         $orders = Order::where('user_id', Auth::id())->latest()->get();
 
         return view('orders.index', compact('orders'));
+    }
+
+    public function cancel(Order $order)
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($order->status !== 'pending') {
+            return back()->with('success', 'Bu sipariş artık iptal edilemez.');
+        }
+
+        $order->update([
+            'status' => 'cancelled',
+        ]);
+
+        $user = Auth::user();
+        $user->increment('balance', $order->total_price);
+
+        foreach ($order->items as $item) {
+            $item->product->increment('stock', $item->quantity);
+        }
+
+        return back()->with('success', 'Sipariş iptal edildi. Tutar bakiyenize aktarıldı.');
     }
 }

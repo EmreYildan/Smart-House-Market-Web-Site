@@ -1,38 +1,94 @@
-<h1>Sipariş Onay</h1>
+@extends('layouts.app')
 
-<a href="{{ route('cart.index') }}">Sepete Dön</a>
+@section('content')
 
-@php $total = 0; @endphp
+<h1 class="text-3xl font-bold mb-8">Sipariş Onay</h1>
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>Ürün</th>
-        <th>Adet</th>
-        <th>Fiyat</th>
-        <th>Ara Toplam</th>
-    </tr>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-    @foreach($items as $item)
-        @php
-            $subtotal = $item->quantity * $item->product->price;
-            $total += $subtotal;
-        @endphp
-        <tr>
-            <td>{{ $item->product->name }}</td>
-            <td>{{ $item->quantity }}</td>
-            <td>{{ $item->product->price }} TL</td>
-            <td>{{ $subtotal }} TL</td>
-        </tr>
-    @endforeach
-</table>
+    <div class="lg:col-span-2 bg-white rounded-xl shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="text-left p-4">Ürün</th>
+                    <th class="text-left p-4">Adet</th>
+                    <th class="text-left p-4">Fiyat</th>
+                    <th class="text-left p-4">Ara Toplam</th>
+                </tr>
+            </thead>
 
-<h3>Toplam: {{ $total }} TL</h3>
+            <tbody>
+                @php $total = 0; @endphp
 
-<form method="POST" action="{{ route('orders.store') }}">
-    @csrf
+                @foreach($items as $item)
+                    @php
+                        $subtotal = $item->quantity * $item->product->price;
+                        $total += $subtotal;
+                    @endphp
 
-    <label>Teslimat Adresi</label><br>
-    <textarea name="shipping_address" required></textarea><br><br>
+                    <tr class="border-t">
+                        <td class="p-4 font-semibold">
+                            {{ $item->product->name }}
+                        </td>
 
-    <button type="submit">Siparişi Oluştur</button>
-</form>
+                        <td class="p-4">
+                            {{ $item->quantity }}
+                        </td>
+
+                        <td class="p-4">
+                            {{ $item->product->price }} TL
+                        </td>
+
+                        <td class="p-4 font-semibold">
+                            {{ $subtotal }} TL
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 h-fit">
+        <h2 class="text-2xl font-bold mb-6">Teslimat Bilgileri</h2>
+
+        <form method="POST" action="{{ route('orders.store') }}">
+            @csrf
+
+            <label class="block mb-2 font-semibold">
+                Teslimat Adresi
+            </label>
+
+            <textarea
+                name="shipping_address"
+                required
+                rows="5"
+                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="Mahalle, sokak, apartman, ilçe, şehir bilgilerini giriniz"></textarea>
+
+            @error('shipping_address')
+                <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+            @enderror
+
+            <div class="border-t mt-6 pt-6">
+                <div class="flex justify-between mb-4">
+                    <span class="text-gray-600">Toplam Tutar</span>
+                    <span class="text-2xl font-bold text-blue-600">{{ $total }} TL</span>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
+                    Siparişi Oluştur
+                </button>
+            </div>
+        </form>
+
+        <a href="{{ route('cart.index') }}"
+           class="block text-center mt-4 text-blue-600 hover:underline">
+            Sepete Geri Dön
+        </a>
+    </div>
+
+</div>
+
+@endsection

@@ -1,60 +1,95 @@
-<h1>Siparişlerim</h1>
+@extends('layouts.app')
 
-<a href="{{ url('/') }}">Alışverişe Devam Et</a>
+@section('content')
+
+<h1 class="text-3xl font-bold mb-8">Siparişlerim</h1>
 
 @if(session('success'))
-    <p style="color: green;">{{ session('success') }}</p>
+    <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
+        {{ session('success') }}
+    </div>
 @endif
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Toplam</th>
-        <th>Durum</th>
-        <th>Adres</th>
-        <th>Tarih</th>
-    </tr>
+@if($orders->count() > 0)
 
-    @foreach($orders as $order)
-        <tr>
-            <td>{{ $order->id }}</td>
-            <td>{{ $order->total_price }} TL</td>
-            <td>
-                @switch($order->status)
-                    @case('pending')
-                        Bekliyor
-                        @break
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="text-left p-4">Sipariş No</th>
+                    <th class="text-left p-4">Toplam</th>
+                    <th class="text-left p-4">Durum</th>
+                    <th class="text-left p-4">Adres</th>
+                    <th class="text-left p-4">Tarih</th>
+                    <th class="text-left p-4">İşlem</th>
+                </tr>
+            </thead>
 
-                    @case('approved')
-                        Onaylandı
-                        @break
+            <tbody>
+                @foreach($orders as $order)
+                    <tr class="border-t">
+                        <td class="p-4 font-semibold">#{{ $order->id }}</td>
 
-                    @case('preparing')
-                        Hazırlanıyor
-                        @break
+                        <td class="p-4">
+                            {{ $order->total_price }} TL
+                        </td>
 
-                    @case('packed')
-                        Paketlendi
-                        @break
+                        <td class="p-4">
+                            <span class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700">
+                                @switch($order->status)
+                                    @case('pending') Bekliyor @break
+                                    @case('approved') Onaylandı @break
+                                    @case('preparing') Hazırlanıyor @break
+                                    @case('packed') Paketlendi @break
+                                    @case('shipped') Kargoya Verildi @break
+                                    @case('on_the_way') Yolda @break
+                                    @case('delivered') Teslim Edildi @break
+                                    @case('cancelled') İptal Edildi @break
+                                    @default {{ $order->status }}
+                                @endswitch
+                            </span>
+                        </td>
 
-                    @case('shipped')
-                        Kargoya Verildi
-                        @break
+                        <td class="p-4 text-gray-600">
+                            {{ $order->shipping_address }}
+                        </td>
 
-                    @case('on_the_way')
-                        Yolda
-                        @break
+                        <td class="p-4 text-gray-500">
+                            {{ $order->created_at->format('d.m.Y H:i') }}
+                        </td>
 
-                    @case('delivered')
-                        Teslim Edildi
-                        @break
+                        <td class="p-4">
+                            @if($order->status === 'pending')
+                                <form method="POST" action="{{ route('orders.cancel', $order) }}">
+                                    @csrf
 
-                    @default
-                        {{ $order->status }}
-                @endswitch
-            </td>
-            <td>{{ $order->shipping_address }}</td>
-            <td>{{ $order->created_at }}</td>
-        </tr>
-    @endforeach
-</table>
+                                    <button type="submit"
+                                            onclick="return confirm('Siparişi iptal etmek istediğinize emin misiniz?')"
+                                            class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                                        İptal Et
+                                    </button>
+                                </form>
+                            @else
+                                <span class="text-gray-400">İşlem Yok</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+@else
+
+    <div class="bg-white rounded-xl shadow p-10 text-center">
+        <h2 class="text-2xl font-bold mb-4">Henüz siparişiniz yok</h2>
+
+        <a href="{{ url('/') }}"
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+            Alışverişe Başla
+        </a>
+    </div>
+
+@endif
+
+@endsection
