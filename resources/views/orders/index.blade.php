@@ -60,6 +60,7 @@
 
                         <td class="p-4">
                             @if($order->status === 'pending')
+
                                 <form method="POST" action="{{ route('orders.cancel', $order) }}">
                                     @csrf
 
@@ -68,9 +69,33 @@
                                             class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
                                         İptal Et
                                     </button>
+
                                 </form>
+
+                            @elseif($order->status === 'delivered')
+
+                                <form method="POST" action="{{ route('orders.received', $order) }}">
+                                    @csrf
+
+                                    <button type="submit"
+                                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                                        Ürünlerimi Teslim Aldım
+                                    </button>
+
+                                </form>
+
+                            @elseif($order->status === 'received')
+
+                                <span class="text-green-700 font-semibold">
+                                    Teslim Alındı
+                                </span>
+
                             @else
-                                <span class="text-gray-400">İşlem Yok</span>
+
+                                <span class="text-gray-400">
+                                    İşlem Yok
+                                </span>
+
                             @endif
                         </td>
                     </tr>

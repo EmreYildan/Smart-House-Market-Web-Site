@@ -57,4 +57,20 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+        public function deactivate(Request $request)
+    {
+        $user = $request->user();
+
+        $user->update([
+            'is_active' => false,
+        ]);
+
+        auth()->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Hesabınız pasif hale getirildi.');
+    }
 }

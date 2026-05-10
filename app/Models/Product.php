@@ -13,5 +13,16 @@ class Product extends Model
         'stock',
         'image',
         'is_active',
+        'category_id',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

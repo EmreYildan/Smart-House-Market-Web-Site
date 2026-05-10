@@ -31,8 +31,8 @@ class DatabaseSeeder extends Seeder
             'is_active' => true,
             'balance' => 0,
         ]);
-
-        // Ürünler
+        $this->call(CategorySeeder::class);
         $this->call(ProductSeeder::class);
+        $this->call(ReviewSeeder::class);
     }
 }

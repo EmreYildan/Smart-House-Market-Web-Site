@@ -23,6 +23,7 @@
             <tr>
                 <th class="text-left p-4">ID</th>
                 <th class="text-left p-4">Ürün</th>
+                <th class="text-left p-4">Kategori</th>
                 <th class="text-left p-4">Fiyat</th>
                 <th class="text-left p-4">Stok</th>
                 <th class="text-left p-4">Durum</th>
@@ -34,16 +35,43 @@
             @foreach($products as $product)
                 <tr class="border-t">
                     <td class="p-4">#{{ $product->id }}</td>
-                    <td class="p-4 font-semibold">{{ $product->name }}</td>
-                    <td class="p-4">{{ $product->price }} TL</td>
-                    <td class="p-4">{{ $product->stock }}</td>
+
+                    <td class="p-4 font-semibold">
+                        {{ $product->name }}
+                    </td>
+
                     <td class="p-4">
-                        @if($product->is_active)
-                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">Satışta</span>
+                        @if($product->category)
+                            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                                {{ $product->category->name }}
+                            </span>
                         @else
-                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">Pasif</span>
+                            <span class="text-gray-400">
+                                Kategori Yok
+                            </span>
                         @endif
                     </td>
+
+                    <td class="p-4">
+                        {{ $product->price }} TL
+                    </td>
+
+                    <td class="p-4">
+                        {{ $product->stock }}
+                    </td>
+
+                    <td class="p-4">
+                        @if($product->is_active)
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                                Satışta
+                            </span>
+                        @else
+                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+                                Pasif
+                            </span>
+                        @endif
+                    </td>
+
                     <td class="p-4 flex gap-2">
                         <a href="{{ route('products.edit', $product) }}"
                            class="bg-yellow-500 text-white px-3 py-2 rounded-lg hover:bg-yellow-600">
@@ -53,6 +81,7 @@
                         <form method="POST" action="{{ route('products.destroy', $product) }}">
                             @csrf
                             @method('DELETE')
+
                             <button type="submit"
                                     onclick="return confirm('Bu ürünü silmek istediğine emin misin?')"
                                     class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600">

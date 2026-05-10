@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,16 +12,21 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::latest()->get();
+        $products = Product::with('category')->latest()->get();
 
         return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        return view('admin.products.create');
-    }
+        $categories = Category::all();
 
+        return view('admin.products.create', compact('categories'));
+    }
+    public function show(Product $product)
+    {
+        return redirect()->route('products.edit', $product);
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -29,6 +35,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'category_id' => 'nullable|exists:categories,id',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -44,6 +51,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'image' => $imagePath,
+            'category_id' => $request->category_id,
             'is_active' => $request->has('is_active'),
         ]);
 
@@ -52,7 +60,9 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('admin.products.edit', compact('product'));
+        $categories = Category::all();
+
+        return view('admin.products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
@@ -63,6 +73,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'category_id' => 'nullable|exists:categories,id',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -82,6 +93,7 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'image' => $imagePath,
+            'category_id' => $request->category_id,
             'is_active' => $request->has('is_active'),
         ]);
 

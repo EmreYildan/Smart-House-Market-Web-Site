@@ -29,6 +29,10 @@ class OrderController extends Controller
     {
         $request->validate([
             'shipping_address' => 'required|string|max:500',
+            'card_name' => 'required|string|max:255',
+            'card_number' => 'required|string|min:16|max:19',
+            'card_expiry' => 'required|string|max:5',
+            'card_cvv' => 'required|string|min:3|max:3',
         ]);
 
         $userId = Auth::id();
@@ -66,8 +70,7 @@ class OrderController extends Controller
 
         $cart->items()->delete();
 
-        return to_route('orders.index')->with('success', 'Siparişiniz başarıyla oluşturuldu.');
-    }
+        return to_route('orders.index')->with('success', 'Ödeme başarılı. Siparişiniz oluşturuldu.');    }
 
     public function index()
     {
@@ -98,5 +101,22 @@ class OrderController extends Controller
         }
 
         return back()->with('success', 'Sipariş iptal edildi. Tutar bakiyenize aktarıldı.');
+    }
+
+        public function received(Order $order)
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($order->status !== 'delivered') {
+            return back()->with('success', 'Bu sipariş henüz teslim alınamaz.');
+        }
+
+        $order->update([
+            'status' => 'received',
+        ]);
+
+        return back()->with('success', 'Sipariş teslim alındı olarak işaretlendi.');
     }
 }

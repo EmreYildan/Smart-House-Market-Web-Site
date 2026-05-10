@@ -68,7 +68,67 @@
             @error('shipping_address')
                 <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
             @enderror
+            <div class="border-t pt-6 mt-6">
 
+                <h2 class="text-2xl font-bold mb-4">
+                    Ödeme Bilgileri
+                </h2>
+
+                <div class="space-y-4">
+
+                    <div>
+                        <label class="block font-semibold mb-2">
+                            Kart Sahibi
+                        </label>
+
+                        <input type="text"
+                            name="card_name"
+                            placeholder="Ad Soyad"
+                            class="w-full rounded-lg border-gray-300 shadow-sm">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-2">
+                            Kart Numarası
+                        </label>
+
+                        <input type="text"
+                            name="card_number"
+                            placeholder="1234 5678 9012 3456"
+                            maxlength="19"
+                            class="w-full rounded-lg border-gray-300 shadow-sm">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+
+                        <div>
+                            <label class="block font-semibold mb-2">
+                                Son Kullanma Tarihi
+                            </label>
+
+                            <input type="text"
+                                name="card_expiry"
+                                placeholder="12/30"
+                                class="w-full rounded-lg border-gray-300 shadow-sm">
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold mb-2">
+                                CVV
+                            </label>
+
+                            <input type="text"
+                                name="card_cvv"
+                                placeholder="123"
+                                maxlength="3"
+                                class="w-full rounded-lg border-gray-300 shadow-sm">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
             <div class="border-t mt-6 pt-6">
                 <div class="flex justify-between mb-4">
                     <span class="text-gray-600">Toplam Tutar</span>
