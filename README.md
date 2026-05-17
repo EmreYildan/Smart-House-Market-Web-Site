@@ -19,10 +19,15 @@
 ## 1. Proje Bilgileri
 
 **Proje Adı:** Smart House Market - Akıllı Ev Ürünleri Alışveriş Sistemi
+
 **Ders:** Web Programlama
+
 **Framework:** Laravel
+
 **Veritabanı:** MySQL
+
 **Arayüz:** Blade Template Engine + Tailwind CSS
+
 **API Entegrasyonu:** Open-Meteo Weather API
 
 | İsim Soyisim      | Öğrenci Numarası |
