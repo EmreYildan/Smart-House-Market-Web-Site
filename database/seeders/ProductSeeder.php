@@ -87,7 +87,16 @@ class ProductSeeder extends Seeder
                     'price' => $product[2],
                     'stock' => $product[3],
                     'category_id' => $category->id,
-                    'image' => null,
+                    'image' => match($product[4]) {
+                        'Aydınlatma' => 'products/lighting.jpg',
+                        'Güvenlik' => 'products/security.jpg',
+                        'Enerji Yönetimi' => 'products/energy.jpg',
+                        'Temizlik' => 'products/cleaning.jpg',
+                        'İklimlendirme' => 'products/climate.jpg',
+                        'Sensörler' => 'products/sensor.jpg',
+                        'Ev Otomasyonu' => 'products/automation.jpg',
+                        default => null,
+                    },
                     'is_active' => true,
                 ]
             );

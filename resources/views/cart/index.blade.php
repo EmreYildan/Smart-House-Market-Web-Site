@@ -30,7 +30,6 @@
             </thead>
 
             <tbody>
-
                 @foreach($items as $item)
 
                     @php
@@ -43,12 +42,15 @@
                         <td class="p-4">
                             <div class="flex items-center gap-4">
 
-                                <div class="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-                                    @if($item->product->image)
-                                        <img src="{{ $item->product->image }}"
-                                             class="w-full h-full object-cover">
-                                    @endif
-                                </div>
+                                @if($item->product->image)
+                                    <img src="{{ asset('storage/' . $item->product->image) }}"
+                                         alt="{{ $item->product->name }}"
+                                         class="w-20 h-20 object-cover rounded-lg border">
+                                @else
+                                    <div class="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-xs">
+                                        Görsel Yok
+                                    </div>
+                                @endif
 
                                 <div>
                                     <h2 class="font-semibold">
@@ -72,7 +74,6 @@
                         </td>
 
                         <td class="p-4">
-
                             <form method="POST"
                                   action="{{ route('cart.remove', $item) }}">
 
@@ -83,15 +84,12 @@
                                         class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
                                     Çıkar
                                 </button>
-
                             </form>
-
                         </td>
 
                     </tr>
 
                 @endforeach
-
             </tbody>
         </table>
 
