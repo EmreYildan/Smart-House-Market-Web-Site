@@ -128,6 +128,9 @@ Kullanıcı modülü, kullanıcıların sisteme kayıt olması, giriş yapması,
 * Pasif kullanıcı giriş engeli
 * Kullanıcı cüzdan bakiyesi
 
+![kullanıcı](docs/screenshots/user.png)
+
+
 ## 5.2 Admin Modülü
 
 Admin modülü, sistemin içerik yönetim tarafını oluşturur.
@@ -141,6 +144,9 @@ Admin modülü, sistemin içerik yönetim tarafını oluşturur.
 * Yorum yönetimi
 * Sipariş durumunu ilerletme
 * Kullanıcı hesaplarını aktif/pasif yapma
+
+![admin](docs/screenshots/admin.png)
+
 
 ## 5.3 Ürün Modülü
 
@@ -173,6 +179,8 @@ Admin modülü, sistemin içerik yönetim tarafını oluşturur.
 * İklimlendirme
 * Sensörler
 * Ev Otomasyonu
+
+![ürün detay](docs/screenshots/kategori.png)
 
 ## 5.5 Sepet Modülü
 
@@ -224,6 +232,8 @@ Projede kullanıcı hesabına bağlı bir cüzdan sistemi geliştirilmiştir.
 * Alışveriş sırasında önce bakiyenin kullanılması
 * Bakiye yetmezse kalan tutar için kart bilgisi istenmesi
 
+![Cüzdan](docs/screenshots/cüzdan.png)
+
 ## 5.8 Favoriler Modülü
 
 Kullanıcılar beğendikleri ürünleri favorilerine ekleyebilir ve daha sonra favori listesinden görüntüleyebilir.
@@ -261,6 +271,9 @@ Siteye kullanıcı deneyimini artırmak amacıyla bir mini asistan eklenmiştir.
 * Kullanıcıya hızlı yönlendirme sağlar
 * Siparişler, profil, cüzdan, favoriler ve hava durumu sayfalarına yönlendirir
 * Kullanıcı metin yazdığında anahtar kelimelere göre otomatik cevap üretir
+
+![Bot](docs/screenshots/bot.png)
+
 
 ## 5.11 Hava Durumu API ve Ürün Öneri Modülü
 
