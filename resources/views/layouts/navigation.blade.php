@@ -3,7 +3,6 @@
         <div class="flex justify-between h-16">
 
             <div class="flex items-center">
-
                 <div class="shrink-0 flex items-center">
                     <a href="{{ url('/') }}" class="text-xl font-bold text-blue-600">
                         Smart House Market
@@ -11,7 +10,6 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:ms-10 sm:flex">
-
                     <x-nav-link :href="url('/')" :active="request()->is('/')">
                         Ürünler
                     </x-nav-link>
@@ -20,6 +18,10 @@
                         @if(auth()->user()->role === 'admin')
                             <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                                 Admin Panel
+                            </x-nav-link>
+
+                            <x-nav-link :href="route('admin.reviews.index')" :active="request()->routeIs('admin.reviews.*')">
+                                Yorumlar
                             </x-nav-link>
 
                             <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
@@ -38,10 +40,6 @@
                                 Kullanıcılar
                             </x-nav-link>
                         @else
-                            <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
-                                Panelim
-                            </x-nav-link>
-
                             <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.*')">
                                 Sepetim
                             </x-nav-link>
@@ -54,12 +52,11 @@
                                 Favorilerim
                             </x-nav-link>
 
-                            <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">
-                                Profil
+                            <x-nav-link :href="route('weather.index')" :active="request()->routeIs('weather.*')">
+                                Hava Durumu
                             </x-nav-link>
                         @endif
                     @endauth
-
                 </div>
             </div>
 
@@ -79,8 +76,22 @@
                         </x-slot>
 
                         <x-slot name="content">
+                            @if(auth()->user()->role !== 'admin')
+                                <x-dropdown-link :href="route('user.dashboard')">
+                                    Panelim
+                                </x-dropdown-link>
+                            @endif
+
+                            <x-dropdown-link :href="route('wallet.index')">
+                                Cüzdanım
+                            </x-dropdown-link>
+
                             <x-dropdown-link :href="route('profile.edit')">
-                                Profil
+                                Profilim
+                            </x-dropdown-link>
+
+                            <x-dropdown-link :href="route('settings.index')">
+                                Ayarlar
                             </x-dropdown-link>
 
                             <form method="POST" action="{{ route('logout') }}">
@@ -132,11 +143,9 @@
     </div>
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-
         <div class="pt-2 pb-3 space-y-1">
-
             <x-responsive-nav-link :href="url('/')" :active="request()->is('/')">
-                Ürünler
+                <span class="lang-products">Ürünler</span>
             </x-responsive-nav-link>
 
             @auth
@@ -173,20 +182,27 @@
                         Siparişlerim
                     </x-responsive-nav-link>
 
+
                     <x-responsive-nav-link :href="route('favorites.index')" :active="request()->routeIs('favorites.*')">
                         Favorilerim
                     </x-responsive-nav-link>
 
-                    <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">
-                        Profil
-                    </x-responsive-nav-link>
+                    <x-nav-link :href="route('weather.index')" :active="request()->routeIs('weather.*')">
+                        Hava Durumu
+                    </x-nav-link>
                 @endif
-            @endauth
 
+                <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">
+                    Profilim
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">
+                    Ayarlar
+                </x-responsive-nav-link>
+            @endauth
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">
-
             @auth
                 <div class="px-4">
                     <div class="font-medium text-base text-gray-800">
@@ -219,7 +235,6 @@
                     </a>
                 </div>
             @endauth
-
         </div>
     </div>
 </nav>

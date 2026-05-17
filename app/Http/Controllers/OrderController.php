@@ -29,10 +29,10 @@ class OrderController extends Controller
     {
         $request->validate([
             'shipping_address' => 'required|string|max:500',
-            'card_name' => 'required|string|max:255',
-            'card_number' => 'required|string|min:16|max:19',
-            'card_expiry' => 'required|string|max:5',
-            'card_cvv' => 'required|string|min:3|max:3',
+            'card_name' => 'nullable|string|max:255',
+            'card_number' => 'nullable|string|min:16|max:19',
+            'card_expiry' => 'nullable|string|max:5',
+            'card_cvv' => 'nullable|string|min:3|max:3',
         ]);
 
         $userId = Auth::id();
@@ -49,6 +49,27 @@ class OrderController extends Controller
 
             $total += $item->quantity * $item->product->price;
         }
+         $user = Auth::user();
+
+            $usedBalance = min($user->balance, $total);
+            $remainingAmount = $total - $usedBalance;
+
+            if ($remainingAmount > 0) {
+                if (
+                    !$request->card_name ||
+                    !$request->card_number ||
+                    !$request->card_expiry ||
+                    !$request->card_cvv
+                ) {
+                    return back()->withErrors([
+                        'payment' => 'Bakiyeniz yetersiz. Kalan tutar için kart bilgileri gereklidir.',
+                    ]);
+                }
+            }
+
+            if ($usedBalance > 0) {
+                $user->decrement('balance', $usedBalance);
+            }
 
         $order = Order::create([
             'user_id' => $userId,
@@ -70,7 +91,7 @@ class OrderController extends Controller
 
         $cart->items()->delete();
 
-        return to_route('orders.index')->with('success', 'Ödeme başarılı. Siparişiniz oluşturuldu.');    }
+        return to_route('orders.index')->with('success', 'Sipariş oluşturuldu. Kullanılabilir bakiye otomatik olarak uygulandı.');    }
 
     public function index()
     {

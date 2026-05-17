@@ -33,7 +33,15 @@
                 ⭐ {{ number_format($averageRating, 1) }} / 5
 
                 <span class="text-gray-500 text-base">
-                    ({{ $product->reviews->count() }} yorum)
+                    @php
+                        $photoCount = $product->reviews->whereNotNull('image')->count();
+                    @endphp
+
+                    ({{ $product->reviews->count() }} yorum
+                    @if($photoCount > 0)
+                        • {{ $photoCount }} fotoğraf
+                    @endif
+                    )
                 </span>
             @else
                 <span class="text-gray-400 text-base">
@@ -103,12 +111,23 @@
         Yorumlar
     </h2>
 
+    @if($errors->any())
+        <div class="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
+            <ul class="list-disc ml-5">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @auth
         <div class="bg-white rounded-xl shadow p-6 mb-10">
 
             <form method="POST"
-                  action="{{ route('reviews.store', $product) }}"
-                  class="space-y-4">
+                action="{{ route('reviews.store', $product) }}"
+                enctype="multipart/form-data"
+                class="space-y-4">
 
                 @csrf
 
@@ -138,6 +157,16 @@
                               rows="4"
                               class="w-full rounded-lg border-gray-300 shadow-sm"
                               placeholder="Yorumunuzu yazın..."></textarea>
+
+                              <div>
+                                <label class="block font-semibold mb-2">
+                                    Fotoğraf Ekle!
+                                </label>
+
+                                <input type="file"
+                                    name="image"
+                                    class="w-full rounded-lg border-gray-300 shadow-sm">
+                            </div>
                 </div>
 
                 <button type="submit"
@@ -171,6 +200,18 @@
                 <p class="text-gray-600">
                     {{ $review->comment }}
                 </p>
+
+                @if($review->image)
+
+                    <a href="{{ asset('storage/' . $review->image) }}"
+                    target="_blank">
+
+                        <img src="{{ asset('storage/' . $review->image) }}"
+                            class="mt-4 w-40 h-40 object-cover rounded-lg border hover:scale-105 transition cursor-pointer">
+
+                    </a>
+
+                @endif
 
             </div>
 

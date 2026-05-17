@@ -69,7 +69,16 @@
                 <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
             @enderror
             <div class="border-t pt-6 mt-6">
+            <div class="bg-blue-50 text-blue-700 p-4 rounded-lg mb-6">
+                <p><strong>Mevcut Bakiyeniz:</strong> {{ auth()->user()->balance }} TL</p>
+                <p><strong>Sipariş Toplamı:</strong> {{ $total }} TL</p>
 
+                @php
+                    $remaining = max($total - auth()->user()->balance, 0);
+                @endphp
+
+                <p><strong>Kartla Ödenecek Tutar:</strong> {{ $remaining }} TL</p>
+            </div>
                 <h2 class="text-2xl font-bold mb-4">
                     Ödeme Bilgileri
                 </h2>

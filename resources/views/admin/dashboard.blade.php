@@ -40,7 +40,7 @@
             Kullanıcıları görüntüle ve yönet.
         </p>
     </a>
-    
+
     <a href="{{ route('categories.index') }}"
         class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
 
@@ -50,6 +50,19 @@
 
         <p class="text-gray-600 mt-2">
             Kategorileri ekle, düzenle ve sil.
+        </p>
+
+    </a>
+
+   <a href="{{ route('admin.reviews.index') }}"
+    class="bg-white rounded-xl shadow p-6 hover:shadow-lg transition">
+
+        <h2 class="text-xl font-bold text-gray-900">
+            Yorum Yönetimi
+        </h2>
+
+        <p class="text-gray-600 mt-2">
+            Kullanıcı yorumlarını görüntüle ve uygunsuz yorumları sil.
         </p>
 
     </a>

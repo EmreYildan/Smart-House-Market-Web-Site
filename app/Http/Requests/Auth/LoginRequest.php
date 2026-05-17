@@ -41,7 +41,13 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
+        $user = \App\Models\User::where('email', $this->email)->first();
 
+        if ($user && !$user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => 'Hesabınız pasif durumda. Yönetici ile iletişime geçin.',
+            ]);
+        }
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 

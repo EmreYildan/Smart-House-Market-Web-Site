@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WalletController;
+use App\Http\Controllers\WeatherController;
 
 Route::get('/', function () {
     $search = request('search');
@@ -40,12 +42,28 @@ Route::get('/user/dashboard', function () {
 })->middleware('auth')->name('user.dashboard');
 
 Route::middleware('auth')->group(function () {
+
+
+    Route::get('/settings', function () {
+        return view('settings.index');
+    })->name('settings.index');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
     Route::post('/orders/{order}/received', [OrderController::class, 'received'])->name('orders.received');
     Route::post('/profile/deactivate', [ProfileController::class, 'deactivate'])->name('profile.deactivate');
+    Route::get('/wallet', [WalletController::class, 'index'])->name('wallet.index');
+    Route::post('/wallet/top-up', [WalletController::class, 'topUp'])->name('wallet.topUp');
+    Route::get('/weather', [WeatherController::class, 'index'])->name('weather.index');
+
+    Route::get('/reviews', [\App\Http\Controllers\Admin\ReviewController::class, 'index'])
+    ->name('admin.reviews.index');
+
+Route::delete('/reviews/{review}', [\App\Http\Controllers\Admin\ReviewController::class, 'destroy'])
+    ->name('admin.reviews.destroy');
+
 
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');

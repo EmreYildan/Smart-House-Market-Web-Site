@@ -86,7 +86,15 @@
                         ⭐ {{ number_format($averageRating, 1) }} / 5
 
                         <span class="text-gray-500 text-sm">
-                            ({{ $product->reviews->count() }} yorum)
+                            @php
+                                $photoCount = $product->reviews->whereNotNull('image')->count();
+                            @endphp
+
+                            ({{ $product->reviews->count() }} yorum
+                            @if($photoCount > 0)
+                                • {{ $photoCount }} fotoğraf
+                            @endif
+                            )
                         </span>
                     @else
                         <span class="text-gray-400 text-sm">
