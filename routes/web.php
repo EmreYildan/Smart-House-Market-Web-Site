@@ -87,7 +87,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class)
+    ->except(['show']);
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
 
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
